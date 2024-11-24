@@ -1,0 +1,14 @@
+- name: Deploy web App
+  hosts: all
+  tasks:
+    - name: Install nginx server on Ubuntu Server
+      become: true
+      apt:
+        - name: nginx
+        - state: present
+    - name: Clone project repo in server
+      git:
+        repo: 'https://github.com/do-community/html_demo_site.git'
+        dest: /tmp/checkout
+
+
