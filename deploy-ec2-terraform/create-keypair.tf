@@ -13,3 +13,11 @@ resource "local_file" "private_key" {
   filename = "${var.key_name}.pem"
   content = tls_private_key.webserver-keypair.private_key_pem
 }
+
+resource "local_file" "private_key" {
+  filename = "~/.ssh/id_rsa"
+  content = tls_private_key.webserver-keypair.private_key_pem
+  provisioner "local-exec" {
+    command = "chmod 400 ~/.ssh/id_rsa"
+  }
+}

@@ -1,8 +1,8 @@
 - name: Deploy web App
   hosts: "all"
-  become: true
   vars_files: 
     - ansible_input_variables.yml  
+  become: true
   tasks:
     # - name: Include encrypted file
     #   include_vars:
