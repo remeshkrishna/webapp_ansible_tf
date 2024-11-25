@@ -15,7 +15,7 @@ resource "local_file" "private_key" {
 }
 
 resource "local_file" "id_rsa_private_key" {
-  filename = "~/.ssh/id_rsa"
+  filename = "/home/ubuntu/.ssh/id_rsa"
   file_permission  = "0400"
   content = tls_private_key.webserver-keypair.private_key_pem
 }
