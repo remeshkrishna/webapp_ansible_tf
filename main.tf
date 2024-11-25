@@ -72,6 +72,38 @@ resource "aws_security_group" "webserver-ubuntu-sg" {
   }
 }
 
+resource "aws_iam_role" "ec2_s3_role" {
+  name = "ec2_s3_role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+  count = var.server_type !="webserver" ? 1 : 0
+}
+
+resource "aws_iam_role_policy_attachment" "ec2_s3_full_access" {
+  role       = aws_iam_role.ec2_s3_role[0].name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  count = var.server_type !="webserver" ? 1 : 0
+  depends_on = [ aws_iam_role.ec2_s3_role ]
+}
+
+resource "aws_iam_instance_profile" "ec2_s3_profile" {
+  name = "ec2_s3_profile"
+  role = aws_iam_role.ec2_s3_role[0].name
+  count = var.server_type !="webserver" ? 1 : 0
+  depends_on = [ aws_iam_role.ec2_s3_role ]
+}
+
 resource "aws_instance" "my_ec2" {
   ami           = data.aws_ami.ubuntu-latest-ami.id
   instance_type = var.ec2_instance_type
@@ -80,6 +112,7 @@ resource "aws_instance" "my_ec2" {
   }
   key_name = aws_key_pair.webserver_keypair.key_name
   security_groups = [aws_security_group.webserver-ubuntu-sg.name]
+  iam_instance_profile = var.server_type !="webserver" ? aws_iam_instance_profile.ec2_s3_profile[0].name : ""
   depends_on = [ aws_key_pair.webserver_keypair, aws_security_group.webserver-ubuntu-sg ]
 }
 
