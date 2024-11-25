@@ -1,5 +1,6 @@
 - name: Deploy web App
   hosts: "all"
+  become: true
   vars_files: 
     - ansible_input_variables.yml  
   tasks:
@@ -8,13 +9,11 @@
     #     file: aws_credentials.yml
           
     - name: Install nginx server on Ubuntu Server
-      become: true
       apt:
-        - name: nginx
-          update_cache: true
+        name: nginx
+        update_cache: true
    
     - name: Ensure directories for project files and configs
-      become: true
       file:
         name: "{{item}}"
         state: directory
@@ -29,7 +28,6 @@
         dest: "{{project_destination_repo}}"
 
     - name: Create server configs
-      become: true
       template:
         src: virtualhost.j2
         dest: "/etc/nginx/conf.d/project_site_{{ansible_host}}.conf"
