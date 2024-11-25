@@ -1,0 +1,8 @@
+image_owner = "amazon"
+region = "us-east-1"
+access_key = "AKIARZDBIAIC4NQRK6VA"
+secret_key = "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"
+key_name = "webserver-ubuntu_keypair"
+sg_name = "webserver-ubuntu-sg"
+ec2_instance_name = "webserver-ubuntu"
+ec2_instance_type = "t2.micro"
