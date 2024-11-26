@@ -4,10 +4,6 @@
     - ansible_input_variables.yml  
   become: true
   tasks:
-    # - name: Include encrypted file
-    #   include_vars:
-    #     file: aws_credentials.yml
-          
     - name: Install nginx server on Ubuntu Server
       apt:
         name: nginx
@@ -15,12 +11,9 @@
    
     - name: Ensure directories for project files and configs
       file:
-        name: "{{item}}"
+        name: "/etc/nginx/conf.d"
         state: directory
         mode: "777"
-      loop:
-        - "/etc/nginx/conf.d"
-        - "{{project_destination_repo}}"
     
     - name: Clone project repo in server
       git:
@@ -32,7 +25,7 @@
         src: virtualhost.j2
         dest: "/etc/nginx/conf.d/project_site_{{ansible_host}}.conf"
     
-    - name: Start nginx server
+    - name: Restart nginx server
       service:
         name: nginx
         state: restarted
