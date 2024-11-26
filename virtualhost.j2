@@ -1,9 +1,9 @@
 server {
-        listen 8080 default_server;
+        listen {{ port }} default_server;
 
-        root /tmp/project_webapp;
+        root {{ project_destination_repo }};
 
-        index index.html;
+        index {{ index_file }};
 
         server_name {{  ansible_default_ipv4.address }};
 
